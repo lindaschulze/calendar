@@ -1,117 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        .calendar {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin: 20px;
-        }
-        .month {
-            width: 30%;
-            background-color: #fff;
-            padding: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .month h3 {
-            text-align: center;
-            margin: 0;
-        }
-        .day {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-        }
-        .day input {
-            flex-grow: 1;
-        }
-        .day div {
-            width: 30%;
-        }
-        .day.selected {
-            background-color: #e0f7fa;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar 2025</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="calendar.js" defer></script>
 </head>
 <body>
-    <div class="calendar" id="calendar">
-        <!-- Calendar months will be dynamically inserted here -->
-    </div>
+  <div class="calendar-container" id="calendar-container"></div>
 
-    <!-- Link to the calendar.js script -->
-    <script src="calendar.js"></script>
+  <script>
+    async function renderCalendar() {
+      const calendarData = await loadCalendarData();
 
-    <script>
-        async function renderCalendar() {
-            const data = await getFromGitHub();
-            const calendarDiv = document.getElementById('calendar');
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const calendarContainer = document.getElementById('calendar-container');
+      calendarContainer.innerHTML = '';
 
-            // Clear existing calendar
-            calendarDiv.innerHTML = '';
+      for (let i = 0; i < calendarData.length; i++) {
+        const day = calendarData[i];
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day');
+        dayDiv.style.backgroundColor = day.color || 'transparent';
 
-            months.forEach(month => {
-                const monthDiv = document.createElement('div');
-                monthDiv.classList.add('month');
+        dayDiv.innerHTML = `
+          <span class="day-label">${day.weekday} - ${day.number}</span>
+          <textarea id="input-${day.number}" class="day-input">${day.text || ''}</textarea>
+          <button onclick="saveText(${day.number})">Save</button>
+        `;
+        calendarContainer.appendChild(dayDiv);
+      }
+    }
 
-                const monthTitle = document.createElement('h3');
-                monthTitle.textContent = month;
-                monthDiv.appendChild(monthTitle);
+    async function saveText(day) {
+      const text = document.getElementById(`input-${day}`).value;
+      await saveUserInput(day, text);
+    }
 
-                const daysDiv = document.createElement('div');
-                daysDiv.classList.add('days');
-
-                // Add days of the month (simplified here for demonstration)
-                for (let i = 1; i <= 31; i++) {
-                    const dayDiv = document.createElement('div');
-                    dayDiv.classList.add('day');
-                    const dayContent = data[month] && data[month][i] ? data[month][i] : '';
-
-                    dayDiv.innerHTML = `
-                        <div>${getWeekdayAbbreviation(new Date(`${month} ${i}, 2025`))} - ${i}</div>
-                        <input type="text" value="${dayContent}" onchange="updateDay('${month}', ${i}, this.value)">
-                    `;
-
-                    if (dayContent) {
-                        dayDiv.classList.add('selected');
-                    }
-
-                    daysDiv.appendChild(dayDiv);
-                }
-
-                monthDiv.appendChild(daysDiv);
-                calendarDiv.appendChild(monthDiv);
-            });
-        }
-
-        function getWeekdayAbbreviation(date) {
-            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            return weekdays[date.getDay()];
-        }
-
-        async function updateDay(month, day, text) {
-            const data = await getFromGitHub();
-
-            if (!data[month]) {
-                data[month] = {};
-            }
-            data[month][day] = text;
-
-            // Save the updated data to GitHub
-            await saveToGitHub(data);
-        }
-
-        renderCalendar();
-    </script>
+    window.onload = renderCalendar;
+  </script>
 </body>
 </html>
