@@ -3,7 +3,7 @@ const FILE_NAME = 'calendarData.json';
 
 // Fetch data from GitHub (calendarData.json)
 async function getFromGitHub() {
-    const token = process.env.GITHUB_TOKEN;  // Fetch token from environment variable
+    const token = process.env.TOKEN;  // Fetch token from environment variable
     const response = await fetch(`${API_URL}/${FILE_NAME}`, {
         method: 'GET',
         headers: {
