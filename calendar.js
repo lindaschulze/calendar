@@ -1,74 +1,117 @@
-// Function to create the calendar
-function generateCalendar(year, month) {
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get number of days in the month
-    const firstDay = new Date(year, month, 1).getDay(); // Get the first day of the month
-    const calendarContainer = document.getElementById('calendar');
-    calendarContainer.innerHTML = ''; // Clear any existing content
+// Configuration
+const calendarContainer = document.getElementById('calendar-container');
+const token = process.env.TOKEN; // Use your GitHub token from secrets
+const repoName = 'calendar';
+const username = 'lindaschulze';
+const filePath = 'calendarData.json';
 
-    // Display month and year in the header
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const monthName = monthNames[month];
-    const header = document.createElement('h2');
-    header.textContent = `${monthName} ${year}`;
-    calendarContainer.appendChild(header);
+// Set up GitHub API
+const octokit = new Octokit({
+  auth: token,
+});
 
-    // Create the calendar grid
-    const table = document.createElement('table');
-    const tableHeader = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach(day => {
-        const th = document.createElement('th');
-        th.textContent = day;
-        headerRow.appendChild(th);
-    });
-    tableHeader.appendChild(headerRow);
-    table.appendChild(tableHeader);
-    
-    const tableBody = document.createElement('tbody');
-    let currentDay = 1;
-    
-    for (let i = 0; i < 6; i++) { // Up to 6 weeks
-        const row = document.createElement('tr');
-        for (let j = 0; j < 7; j++) {
-            const cell = document.createElement('td');
-            if (i === 0 && j < firstDay) {
-                // Empty cells before the first day of the month
-                row.appendChild(cell);
-            } else if (currentDay <= daysInMonth) {
-                const date = `${year}-${(month + 1).toString().padStart(2, '0')}-${currentDay.toString().padStart(2, '0')}`;
-                cell.textContent = currentDay;
-                
-                // Check if there's an event for this date from the calendarData.json
-                if (calendarData[date]) {
-                    const event = document.createElement('div');
-                    event.classList.add('event');
-                    event.textContent = calendarData[date];
-                    cell.appendChild(event);
-                }
-                row.appendChild(cell);
-                currentDay++;
-            }
-        }
-        tableBody.appendChild(row);
+// Initialize calendar for 2025
+function createCalendar(year) {
+    for (let month = 0; month < 12; month++) {
+        createMonth(year, month);
     }
-    
-    table.appendChild(tableBody);
-    calendarContainer.appendChild(table);
 }
 
-// Fetch calendar data and generate calendar
-fetch('calendarData.json')
-    .then(response => response.json())
-    .then(data => {
-        window.calendarData = data; // Make calendar data globally accessible
-        const today = new Date();
-        generateCalendar(today.getFullYear(), today.getMonth()); // Generate current month
-    })
-    .catch(error => {
-        console.error('Error fetching calendar data:', error);
+// Create individual month
+function createMonth(year, month) {
+    const monthElement = document.createElement('div');
+    monthElement.className = 'month';
+    
+    const monthHeader = document.createElement('div');
+    monthHeader.className = 'month-header';
+    monthHeader.textContent = new Date(year, month).toLocaleString('default', { month: 'long' });
+
+    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weekdaysContainer = document.createElement('div');
+    weekdaysContainer.className = 'weekdays';
+
+    weekdays.forEach(day => {
+        const weekdayElement = document.createElement('div');
+        weekdayElement.textContent = day;
+        weekdaysContainer.appendChild(weekdayElement);
     });
 
-// Save functionality (can be extended)
-document.getElementById('save').addEventListener('click', () => {
-    alert('Changes saved!'); // Add more functionality as needed
-});
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+
+    const daysContainer = document.createElement('div');
+    daysContainer.className = 'days-container';
+    
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement('div');
+        daysContainer.appendChild(emptyDay);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        
+        const weekday = new Date(year, month, day).toLocaleString('default', { weekday: 'short' });
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = `${weekday} - ${day}`;
+        
+        const input = document.createElement('input');
+        input.className = 'input';
+        input.placeholder = 'Add a note...';
+
+        const inputContainer = document.createElement('div');
+        inputContainer.className = 'input-container';
+        inputContainer.appendChild(dayNumber);
+        inputContainer.appendChild(input);
+
+        dayElement.appendChild(inputContainer);
+        daysContainer.appendChild(dayElement);
+    }
+
+    monthElement.appendChild(monthHeader);
+    monthElement.appendChild(weekdaysContainer);
+    monthElement.appendChild(daysContainer);
+
+    calendarContainer.appendChild(monthElement);
+}
+
+// Save input to GitHub repository (calendarData.json)
+async function saveToGitHub(data) {
+    const response = await octokit.rest.repos.getContent({
+        owner: username,
+        repo: repoName,
+        path: filePath,
+    });
+
+    const content = Buffer.from(response.data.content, 'base64').toString();
+    const updatedContent = JSON.stringify(data);
+
+    await octokit.rest.repos.createOrUpdateFileContents({
+        owner: username,
+        repo: repoName,
+        path: filePath,
+        message: 'Update calendar data',
+        content: Buffer.from(updatedContent).toString('base64'),
+        sha: response.data.sha,
+    });
+}
+
+// Load data from GitHub
+async function loadDataFromGitHub() {
+    try {
+        const response = await octokit.rest.repos.getContent({
+            owner: username,
+            repo: repoName,
+            path: filePath,
+        });
+        const content = Buffer.from(response.data.content, 'base64').toString();
+        return JSON.parse(content);
+    } catch (error) {
+        console.log('Error loading data:', error);
+        return {};
+    }
+}
+
+// Initialize calendar
+createCalendar(2025);
