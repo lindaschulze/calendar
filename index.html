@@ -50,10 +50,8 @@
         }
         .day {
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
             align-items: center;
-            height: 50px; /* Reduced height */
+            height: 40px; /* Adjusted height */
             border: 1px solid #ddd;
             background-color: white;
             padding: 5px;
@@ -94,10 +92,17 @@
         .day-number {
             font-size: 12px;
             font-weight: bold;
+            margin-right: 5px;
         }
         .weekday {
-            font-size: 8px;
+            font-size: 10px;
             color: #666;
+            margin-right: 5px;
+        }
+        .text {
+            font-size: 10px;
+            color: #333;
+            flex-grow: 1;
         }
     </style>
 </head>
@@ -155,7 +160,7 @@
                 input.addEventListener('focus', () => dayContainer.classList.add('selected'));
                 dayContainer.appendChild(input);
 
-                // Add a color picker to change the column's background
+                // Add a color picker to change the background of the whole day container
                 const colorPicker = document.createElement('div');
                 colorPicker.classList.add('color-picker');
                 const colorInput = document.createElement('input');
@@ -166,17 +171,24 @@
                 colorPicker.appendChild(colorInput);
                 dayContainer.appendChild(colorPicker);
 
-                // Add the day number and weekday
-                const dayNumber = document.createElement('div');
-                dayNumber.classList.add('day-number');
-                dayNumber.textContent = day;
-
+                // Add the weekday abbreviation and day number to the container
                 const weekday = document.createElement('div');
                 weekday.classList.add('weekday');
                 weekday.textContent = daysOfWeek[(firstDay + day - 1) % 7];
 
-                dayContainer.appendChild(dayNumber);
+                const dayNumber = document.createElement('div');
+                dayNumber.classList.add('day-number');
+                dayNumber.textContent = day;
+
+                // Add the text area where users can write something
+                const text = document.createElement('div');
+                text.classList.add('text');
+                text.textContent = input.value;
+
+                // Append elements to the day container
                 dayContainer.appendChild(weekday);
+                dayContainer.appendChild(dayNumber);
+                dayContainer.appendChild(text);
 
                 monthContainer.appendChild(dayContainer);
             }
