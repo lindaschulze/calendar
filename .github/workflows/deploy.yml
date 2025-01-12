@@ -1,9 +1,9 @@
-name: Deploy Calendar
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Or your main branch
 
 jobs:
   deploy:
@@ -13,16 +13,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    - name: Install dependencies
-      run: npm install
-
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        branch: gh-pages
-        folder: .
+        branch: gh-pages  # Target branch for deployment
+        folder: .  # Folder to deploy
+        token: ${{ secrets.TOKEN }}  # Your token for authentication
