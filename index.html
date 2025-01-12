@@ -18,23 +18,23 @@
         .calendar {
             display: grid;
             grid-template-columns: repeat(3, 1fr); /* Three months in a row */
-            grid-gap: 20px;
+            grid-gap: 10px;
             padding: 20px;
             width: 100%;
-            max-width: 1200px; /* Adjusted to ensure fitting in laptop screen */
+            max-width: 1200px;
             overflow: hidden;
         }
         .month {
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 10px;
+            padding: 5px;
             display: flex;
             flex-direction: column;
         }
         .month-name {
             text-align: center;
-            font-size: 20px;
+            font-size: 16px; /* Smaller font size */
             font-weight: bold;
             margin-bottom: 10px;
         }
@@ -45,6 +45,7 @@
             background-color: #333;
             color: white;
             padding: 5px 0;
+            font-size: 12px; /* Smaller font size */
             font-weight: bold;
         }
         .day {
@@ -52,10 +53,11 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            height: 80px; /* Reduced height */
+            height: 50px; /* Reduced height */
             border: 1px solid #ddd;
             background-color: white;
             padding: 5px;
+            font-size: 12px; /* Reduced font size */
             box-sizing: border-box;
             cursor: pointer;
         }
@@ -64,7 +66,7 @@
             height: 100%;
             border: none;
             background-color: transparent;
-            font-size: 12px; /* Reduced font size */
+            font-size: 10px; /* Reduced font size for input */
             box-sizing: border-box;
             resize: none;
         }
@@ -84,10 +86,18 @@
             cursor: pointer;
         }
         .color-picker input {
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
             border: none;
             padding: 0;
+        }
+        .day-number {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .weekday {
+            font-size: 8px;
+            color: #666;
         }
     </style>
 </head>
@@ -156,10 +166,17 @@
                 colorPicker.appendChild(colorInput);
                 dayContainer.appendChild(colorPicker);
 
-                // Add the day number
+                // Add the day number and weekday
                 const dayNumber = document.createElement('div');
+                dayNumber.classList.add('day-number');
                 dayNumber.textContent = day;
+
+                const weekday = document.createElement('div');
+                weekday.classList.add('weekday');
+                weekday.textContent = daysOfWeek[(firstDay + day - 1) % 7];
+
                 dayContainer.appendChild(dayNumber);
+                dayContainer.appendChild(weekday);
 
                 monthContainer.appendChild(dayContainer);
             }
