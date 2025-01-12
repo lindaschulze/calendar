@@ -11,35 +11,48 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
             background-color: #f0f0f0;
+            height: 100vh;
         }
         .calendar {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            grid-template-rows: auto;
-            gap: 5px;
-            width: 90%;
-            max-width: 1100px;
-            margin-top: 20px;
+            grid-template-columns: repeat(3, 1fr); /* Three months in a row */
+            grid-gap: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px; /* Adjusted to ensure fitting in laptop screen */
+            overflow: hidden;
         }
         .month {
-            grid-column: span 7;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .month-name {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
+            margin-bottom: 10px;
         }
         .day-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
             text-align: center;
             background-color: #333;
             color: white;
-            padding: 10px;
+            padding: 5px 0;
             font-weight: bold;
         }
         .day {
-            position: relative;
-            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px; /* Reduced height */
             border: 1px solid #ddd;
             background-color: white;
             padding: 5px;
@@ -51,7 +64,7 @@
             height: 100%;
             border: none;
             background-color: transparent;
-            font-size: 14px;
+            font-size: 12px; /* Reduced font size */
             box-sizing: border-box;
             resize: none;
         }
@@ -71,8 +84,8 @@
             cursor: pointer;
         }
         .color-picker input {
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             border: none;
             padding: 0;
         }
@@ -97,16 +110,21 @@
             // Create a month container
             const monthContainer = document.createElement('div');
             monthContainer.classList.add('month');
-            monthContainer.textContent = `${months[i]} ${year}`;
+            const monthName = document.createElement('div');
+            monthName.classList.add('month-name');
+            monthName.textContent = `${months[i]} ${year}`;
+            monthContainer.appendChild(monthName);
             calendarContainer.appendChild(monthContainer);
 
             // Add day headers (weekdays)
+            const dayHeader = document.createElement('div');
+            dayHeader.classList.add('day-header');
             daysOfWeek.forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.classList.add('day-header');
-                dayHeader.textContent = day;
-                calendarContainer.appendChild(dayHeader);
+                const dayDiv = document.createElement('div');
+                dayDiv.textContent = day;
+                dayHeader.appendChild(dayDiv);
             });
+            monthContainer.appendChild(dayHeader);
 
             // Calculate number of days in the month
             const firstDay = new Date(year, i, 1).getDay();
@@ -115,7 +133,7 @@
             // Add empty spaces for the first day of the month
             for (let j = 0; j < firstDay; j++) {
                 const emptyDiv = document.createElement('div');
-                calendarContainer.appendChild(emptyDiv);
+                monthContainer.appendChild(emptyDiv);
             }
 
             // Add days of the month
@@ -143,7 +161,7 @@
                 dayNumber.textContent = day;
                 dayContainer.appendChild(dayNumber);
 
-                calendarContainer.appendChild(dayContainer);
+                monthContainer.appendChild(dayContainer);
             }
         }
     }
