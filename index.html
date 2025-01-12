@@ -3,27 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar</title>
+    <title>2025 Calendar</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="calendar-container"></div>
 
-    <script>
-        // Check if calendar.js loads correctly
-        console.log("calendar.js is loaded successfully!");
-
-        // Attempt to load calendarData.json
-        fetch('calendarData.json')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Loaded calendar data:', data);
-                // Here you can add code to use 'data' to populate your calendar
-            })
-            .catch(error => {
-                console.error('Error loading calendar data:', error);
-            });
-    </script>
     <script src="calendar.js"></script>
 </body>
 </html>
