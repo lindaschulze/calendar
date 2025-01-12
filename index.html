@@ -3,199 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 Calendar</title>
+    <title>Calendar</title>
     <style>
+        /* Add your custom styles for the calendar here */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
             background-color: #f0f0f0;
-            height: 100vh;
         }
         .calendar {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Three months in a row */
-            grid-gap: 10px;
-            padding: 20px;
-            width: 100%;
-            max-width: 1200px;
-            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 20px;
         }
         .month {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px;
-            display: flex;
-            flex-direction: column;
+            width: 30%;
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        .month-name {
+        .month h3 {
             text-align: center;
-            font-size: 16px; /* Smaller font size */
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .day-header {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            text-align: center;
-            background-color: #333;
-            color: white;
-            padding: 5px 0;
-            font-size: 12px; /* Smaller font size */
-            font-weight: bold;
+            margin: 0;
         }
         .day {
             display: flex;
-            align-items: center;
-            height: 40px; /* Adjusted height */
-            border: 1px solid #ddd;
-            background-color: white;
-            padding: 5px;
-            font-size: 12px; /* Reduced font size */
-            box-sizing: border-box;
-            cursor: pointer;
+            justify-content: space-between;
+            padding: 5px 0;
         }
         .day input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background-color: transparent;
-            font-size: 10px; /* Reduced font size for input */
-            box-sizing: border-box;
-            resize: none;
+            flex-grow: 1;
+        }
+        .day div {
+            width: 30%;
         }
         .day.selected {
-            background-color: #a1c4fd;
-        }
-        .day input:focus {
-            background-color: #e6f0ff;
-        }
-        .color-picker {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 2px;
-            cursor: pointer;
-        }
-        .color-picker input {
-            width: 20px;
-            height: 20px;
-            border: none;
-            padding: 0;
-        }
-        .day-number {
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-        .weekday {
-            font-size: 10px;
-            color: #666;
-            margin-right: 5px;
-        }
-        .text {
-            font-size: 10px;
-            color: #333;
-            flex-grow: 1;
+            background-color: #e0f7fa;
         }
     </style>
 </head>
 <body>
+    <div class="calendar" id="calendar">
+        <!-- Calendar months will be dynamically inserted here -->
+    </div>
 
-<div class="calendar">
-    <!-- Calendar will be generated here -->
-</div>
+    <!-- Link to the calendar.js script -->
+    <script src="calendar.js"></script>
 
-<script>
-    const calendarContainer = document.querySelector('.calendar');
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June', 'July', 
-        'August', 'September', 'October', 'November', 'December'
-    ];
-    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    <script>
+        // Function to generate the calendar view on the page
+        async function renderCalendar() {
+            const data = await getFromGitHub();
+            const calendarDiv = document.getElementById('calendar');
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-    function createCalendar(year) {
-        for (let i = 0; i < 12; i++) {
-            // Create a month container
-            const monthContainer = document.createElement('div');
-            monthContainer.classList.add('month');
-            const monthName = document.createElement('div');
-            monthName.classList.add('month-name');
-            monthName.textContent = `${months[i]} ${year}`;
-            monthContainer.appendChild(monthName);
-            calendarContainer.appendChild(monthContainer);
+            // Clear existing calendar
+            calendarDiv.innerHTML = '';
 
-            // Add day headers (weekdays)
-            const dayHeader = document.createElement('div');
-            dayHeader.classList.add('day-header');
-            daysOfWeek.forEach(day => {
-                const dayDiv = document.createElement('div');
-                dayDiv.textContent = day;
-                dayHeader.appendChild(dayDiv);
+            months.forEach(month => {
+                const monthDiv = document.createElement('div');
+                monthDiv.classList.add('month');
+
+                const monthTitle = document.createElement('h3');
+                monthTitle.textContent = month;
+                monthDiv.appendChild(monthTitle);
+
+                const daysDiv = document.createElement('div');
+                daysDiv.classList.add('days');
+
+                // Add days of the month (simplified here for demonstration)
+                for (let i = 1; i <= 31; i++) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.classList.add('day');
+                    const dayContent = data[month] && data[month][i] ? data[month][i] : '';
+
+                    dayDiv.innerHTML = `
+                        <div>${getWeekdayAbbreviation(new Date(`${month} ${i}, 2025`))} - ${i}</div>
+                        <input type="text" value="${dayContent}" onchange="updateDay('${month}', ${i}, this.value)">
+                    `;
+
+                    // Highlight day if data exists
+                    if (dayContent) {
+                        dayDiv.classList.add('selected');
+                    }
+
+                    daysDiv.appendChild(dayDiv);
+                }
+
+                monthDiv.appendChild(daysDiv);
+                calendarDiv.appendChild(monthDiv);
             });
-            monthContainer.appendChild(dayHeader);
-
-            // Calculate number of days in the month
-            const firstDay = new Date(year, i, 1).getDay();
-            const lastDate = new Date(year, i + 1, 0).getDate();
-
-            // Add empty spaces for the first day of the month
-            for (let j = 0; j < firstDay; j++) {
-                const emptyDiv = document.createElement('div');
-                monthContainer.appendChild(emptyDiv);
-            }
-
-            // Add days of the month
-            for (let day = 1; day <= lastDate; day++) {
-                const dayContainer = document.createElement('div');
-                dayContainer.classList.add('day');
-                
-                // Create color picker
-                const colorPicker = document.createElement('div');
-                colorPicker.classList.add('color-picker');
-                const colorInput = document.createElement('input');
-                colorInput.type = 'color';
-                colorInput.addEventListener('input', (e) => {
-                    dayContainer.style.backgroundColor = e.target.value;
-                });
-                colorPicker.appendChild(colorInput);
-                dayContainer.appendChild(colorPicker);
-
-                // Add the weekday abbreviation and day number to the container
-                const weekday = document.createElement('div');
-                weekday.classList.add('weekday');
-                weekday.textContent = daysOfWeek[(firstDay + day - 1) % 7];
-
-                const dayNumber = document.createElement('div');
-                dayNumber.classList.add('day-number');
-                dayNumber.textContent = day;
-
-                // Add the text input for the day
-                const text = document.createElement('div');
-                text.classList.add('text');
-                const input = document.createElement('textarea');
-                input.placeholder = `Write something for ${day}`;
-                text.appendChild(input);
-
-                // Append elements to the day container
-                dayContainer.appendChild(weekday);
-                dayContainer.appendChild(dayNumber);
-                dayContainer.appendChild(text);
-
-                monthContainer.appendChild(dayContainer);
-            }
         }
-    }
 
-    // Generate the calendar for 2025
-    createCalendar(2025);
-</script>
+        // Function to get weekday abbreviation
+        function getWeekdayAbbreviation(date) {
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            return weekdays[date.getDay()];
+        }
 
+        // Function to update the day data and save it to GitHub
+        async function updateDay(month, day, text) {
+            const data = await getFromGitHub();
+
+            if (!data[month]) {
+                data[month] = {};
+            }
+            data[month][day] = text;
+
+            // Save the updated data to GitHub
+            await saveToGitHub(data);
+        }
+
+        // Render the calendar when the page loads
+        renderCalendar();
+    </script>
 </body>
 </html>
