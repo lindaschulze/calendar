@@ -1,9 +1,44 @@
-{
-  "January": {
-    "1": "New Year Celebration",
-    "2": "Work Day"
+[
+  {
+    "number": 1,
+    "weekday": "Monday",
+    "text": "",
+    "color": "lightblue"
   },
-  "February": {
-    "14": "Valentine's Day"
+  {
+    "number": 2,
+    "weekday": "Tuesday",
+    "text": "",
+    "color": "lightgreen"
+  },
+  {
+    "number": 3,
+    "weekday": "Wednesday",
+    "text": "",
+    "color": "lightcoral"
+  },
+  {
+    "number": 4,
+    "weekday": "Thursday",
+    "text": "",
+    "color": "lightyellow"
+  },
+  {
+    "number": 5,
+    "weekday": "Friday",
+    "text": "",
+    "color": "lightpink"
+  },
+  {
+    "number": 6,
+    "weekday": "Saturday",
+    "text": "",
+    "color": "lightgray"
+  },
+  {
+    "number": 7,
+    "weekday": "Sunday",
+    "text": "",
+    "color": "lightgoldenrodyellow"
   }
-}
+]
