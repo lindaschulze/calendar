@@ -13,21 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2  # Checkout your repository code
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'  # Set up Node.js (if using it)
-
-      - name: Install dependencies
-        run: npm install  # Install any dependencies (if using npm)
-
-      - name: Run deployment script
-        run: node deploy.js  # Replace with your deployment script (or remove this if not needed)
-
       - name: Deploy to GitHub Pages
         uses: jamesives/github-pages-deploy-action@v4  # Deploy to GitHub Pages
         with:
           branch: gh-pages  # The branch for GitHub Pages
-          folder: build  # The folder to deploy (adjust if your folder name is different)
+          folder: .  # Deploy the root folder (adjust if necessary)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the token stored in secrets
+          TOKEN: ${{ secrets.TOKEN }}  # Use the token stored in secrets (ensure secret is named "TOKEN")
