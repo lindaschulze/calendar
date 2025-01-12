@@ -1,9 +1,8 @@
-// calendar.js
-
-const token = process.env.TOKEN;
+const token = process.env.TOKEN; // GitHub Personal Access Token
 const repo = 'calendar';  // Your repository name
-const filePath = 'calendarData.json';  // The file to store calendar data in the repo
+const filePath = 'calendarData.json';  // Path to your calendar data file
 
+// Load the calendar data from GitHub
 async function loadCalendarData() {
   try {
     const response = await fetch(`https://api.github.com/repos/lindaschulze/${repo}/contents/${filePath}`, {
@@ -17,12 +16,15 @@ async function loadCalendarData() {
     return JSON.parse(fileContent);
   } catch (error) {
     console.error('Error loading calendar data:', error);
-    return [];
+    return []; // Return an empty array in case of error
   }
 }
 
+// Save the updated calendar data to GitHub
 async function saveCalendarData(data) {
   try {
+    const sha = await getFileSha();  // Fetch the file's SHA for updating
+
     const response = await fetch(`https://api.github.com/repos/lindaschulze/${repo}/contents/${filePath}`, {
       method: 'PUT',
       headers: {
@@ -35,19 +37,19 @@ async function saveCalendarData(data) {
           name: 'GitHub Actions',
           email: 'github-actions@github.com',
         },
-        content: btoa(JSON.stringify(data)),  // Encode to base64
-        sha: await getFileSha(),  // Fetch the existing sha to update
+        content: btoa(JSON.stringify(data)),  // Encode data as base64
+        sha: sha,
       }),
     });
 
     const result = await response.json();
-    return result;
+    console.log('File updated successfully:', result);
   } catch (error) {
     console.error('Error saving calendar data:', error);
   }
 }
 
-// Fetch the sha of the file for updating it
+// Get the SHA of the calendar data file for updates
 async function getFileSha() {
   try {
     const response = await fetch(`https://api.github.com/repos/lindaschulze/${repo}/contents/${filePath}`, {
@@ -57,15 +59,18 @@ async function getFileSha() {
     });
 
     const data = await response.json();
-    return data.sha;
+    return data.sha; // Return the file's SHA
   } catch (error) {
     console.error('Error getting file sha:', error);
   }
 }
 
-// Save user input (example)
+// Save user input for a specific day
 async function saveUserInput(day, text) {
-  const calendarData = await loadCalendarData();
-  calendarData[day - 1].text = text;  // Store text for the given day
-  await saveCalendarData(calendarData);
+  const calendarData = await loadCalendarData(); // Load current calendar data
+  calendarData[day - 1].text = text; // Update the text for the selected day
+  await saveCalendarData(calendarData); // Save the updated data
 }
+
+// Example of saving user input (e.g., for day 1, Monday)
+saveUserInput(1, 'Meeting with team at 10 AM');
