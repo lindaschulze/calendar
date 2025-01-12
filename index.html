@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: auto;
+            gap: 5px;
+            width: 90%;
+            max-width: 1100px;
+            margin-top: 20px;
+        }
+        .month {
+            grid-column: span 7;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .day-header {
+            text-align: center;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .day {
+            position: relative;
+            height: 100px;
+            border: 1px solid #ddd;
+            background-color: white;
+            padding: 5px;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .day input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: transparent;
+            font-size: 14px;
+            box-sizing: border-box;
+            resize: none;
+        }
+        .day.selected {
+            background-color: #a1c4fd;
+        }
+        .day input:focus {
+            background-color: #e6f0ff;
+        }
+        .color-picker {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 2px;
+            cursor: pointer;
+        }
+        .color-picker input {
+            width: 30px;
+            height: 30px;
+            border: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calendar">
+    <!-- Calendar will be generated here -->
+</div>
+
+<script>
+    const calendarContainer = document.querySelector('.calendar');
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June', 'July', 
+        'August', 'September', 'October', 'November', 'December'
+    ];
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    function createCalendar(year) {
+        for (let i = 0; i < 12; i++) {
+            // Create a month container
+            const monthContainer = document.createElement('div');
+            monthContainer.classList.add('month');
+            monthContainer.textContent = `${months[i]} ${year}`;
+            calendarContainer.appendChild(monthContainer);
+
+            // Add day headers (weekdays)
+            daysOfWeek.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.classList.add('day-header');
+                dayHeader.textContent = day;
+                calendarContainer.appendChild(dayHeader);
+            });
+
+            // Calculate number of days in the month
+            const firstDay = new Date(year, i, 1).getDay();
+            const lastDate = new Date(year, i + 1, 0).getDate();
+
+            // Add empty spaces for the first day of the month
+            for (let j = 0; j < firstDay; j++) {
+                const emptyDiv = document.createElement('div');
+                calendarContainer.appendChild(emptyDiv);
+            }
+
+            // Add days of the month
+            for (let day = 1; day <= lastDate; day++) {
+                const dayContainer = document.createElement('div');
+                dayContainer.classList.add('day');
+                const input = document.createElement('textarea');
+                input.placeholder = `Write something for ${day}`;
+                input.addEventListener('focus', () => dayContainer.classList.add('selected'));
+                dayContainer.appendChild(input);
+
+                // Add a color picker to change the column's background
+                const colorPicker = document.createElement('div');
+                colorPicker.classList.add('color-picker');
+                const colorInput = document.createElement('input');
+                colorInput.type = 'color';
+                colorInput.addEventListener('input', (e) => {
+                    dayContainer.style.backgroundColor = e.target.value;
+                });
+                colorPicker.appendChild(colorInput);
+                dayContainer.appendChild(colorPicker);
+
+                // Add the day number
+                const dayNumber = document.createElement('div');
+                dayNumber.textContent = day;
+                dayContainer.appendChild(dayNumber);
+
+                calendarContainer.appendChild(dayContainer);
+            }
+        }
+    }
+
+    // Generate the calendar for 2025
+    createCalendar(2025);
+</script>
+
+</body>
+</html>
