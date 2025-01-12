@@ -10,24 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build and deploy
-        run: npm run deploy
-
-      - name: Deploy to GitHub Pages
-        uses: jamesives/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: ./ # Your build folder
-        env:
-          TOKEN: ${{ secrets.TOKEN }}  # GitHub token secret
+    - name: Setup GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages  # The branch to deploy to (you can change this if you want)
+        folder: ./  # The folder to deploy, change this if you need a subfolder to deploy
+        token: ${{ secrets.TOKEN }}  # Use your GitHub Personal Access Token here
