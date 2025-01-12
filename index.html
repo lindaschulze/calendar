@@ -92,7 +92,7 @@
         .day-number {
             font-size: 12px;
             font-weight: bold;
-            margin-right: 5px;
+            margin-left: 5px;
         }
         .weekday {
             font-size: 10px;
@@ -155,12 +155,8 @@
             for (let day = 1; day <= lastDate; day++) {
                 const dayContainer = document.createElement('div');
                 dayContainer.classList.add('day');
-                const input = document.createElement('textarea');
-                input.placeholder = `Write something for ${day}`;
-                input.addEventListener('focus', () => dayContainer.classList.add('selected'));
-                dayContainer.appendChild(input);
-
-                // Add a color picker to change the background of the whole day container
+                
+                // Create color picker
                 const colorPicker = document.createElement('div');
                 colorPicker.classList.add('color-picker');
                 const colorInput = document.createElement('input');
@@ -180,10 +176,12 @@
                 dayNumber.classList.add('day-number');
                 dayNumber.textContent = day;
 
-                // Add the text area where users can write something
+                // Add the text input for the day
                 const text = document.createElement('div');
                 text.classList.add('text');
-                text.textContent = input.value;
+                const input = document.createElement('textarea');
+                input.placeholder = `Write something for ${day}`;
+                text.appendChild(input);
 
                 // Append elements to the day container
                 dayContainer.appendChild(weekday);
