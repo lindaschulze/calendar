@@ -18,7 +18,7 @@ async function getFromGitHub() {
 
     const data = await response.json();
     const decodedData = JSON.parse(atob(data.content));  // Decode base64 content
-    console.log('Fetched Data:', decodedData);  // Log fetched data
+    console.log('Fetched Data:', decodedData);  // Log fetched data to see if it works
     return decodedData;
 }
 
