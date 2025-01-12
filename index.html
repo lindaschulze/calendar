@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar 2025</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="calendar.js" defer></script>
+</head>
+<body>
+  <div class="calendar-container" id="calendar-container"></div>
+
+  <script>
+    async function renderCalendar() {
+      const calendarData = await loadCalendarData();
+
+      const calendarContainer = document.getElementById('calendar-container');
+      calendarContainer.innerHTML = '';
+
+      for (let i = 0; i < calendarData.length; i++) {
+        const day = calendarData[i];
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day');
+        dayDiv.style.backgroundColor = day.color || 'transparent';
+
+        dayDiv.innerHTML = `
+          <span class="day-label">${day.weekday} - ${day.number}</span>
+          <textarea id="input-${day.number}" class="day-input">${day.text || ''}</textarea>
+          <button onclick="saveText(${day.number})">Save</button>
+        `;
+        calendarContainer.appendChild(dayDiv);
+      }
+    }
+
+    async function saveText(day) {
+      const text = document.getElementById(`input-${day}`).value;
+      await saveUserInput(day, text);
+    }
+
+    window.onload = renderCalendar;
+  </script>
+</body>
+</html>
