@@ -1,44 +1,17 @@
-[
-  {
-    "number": 1,
-    "weekday": "Monday",
-    "text": "",
-    "color": "lightblue"
-  },
-  {
-    "number": 2,
-    "weekday": "Tuesday",
-    "text": "",
-    "color": "lightgreen"
-  },
-  {
-    "number": 3,
-    "weekday": "Wednesday",
-    "text": "",
-    "color": "lightcoral"
-  },
-  {
-    "number": 4,
-    "weekday": "Thursday",
-    "text": "",
-    "color": "lightyellow"
-  },
-  {
-    "number": 5,
-    "weekday": "Friday",
-    "text": "",
-    "color": "lightpink"
-  },
-  {
-    "number": 6,
-    "weekday": "Saturday",
-    "text": "",
-    "color": "lightgray"
-  },
-  {
-    "number": 7,
-    "weekday": "Sunday",
-    "text": "",
-    "color": "lightgoldenrodyellow"
-  }
-]
+{
+  "2025": {
+    "January": {
+      "1": {"text": "New Year's Day", "color": "#FFDDC1"},
+      "2": {"text": "", "color": "#FFFFFF"},
+      "3": {"text": "", "color": "#FFFFFF"},
+      "4": {"text": "", "color": "#FFFFFF"},
+      "5": {"text": "", "color": "#FFFFFF"},
+      "6": {"text": "Epiphany", "color": "#FFDDC1"},
+      "7": {"text": "", "color": "#FFFFFF"},
+      "8": {"text": "", "color": "#FFFFFF"},
+      "9": {"text": "", "color": "#FFFFFF"},
+      "10": {"text": "", "color": "#FFFFFF"},
+      "11": {"text": "", "color": "#FFFFFF"},
+      "12": {"text": "", "color": "#FFFFFF"}
+    },
+    "February": {
